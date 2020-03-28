@@ -4,7 +4,7 @@ from PIL import Image
 import PyPDF4
 
 
-def image_to_pdf(folder='./', subfolder='temp/'):
+def image_to_pdf(folder='./doc/', subfolder='temp/'):
     # check if output folder exist
     path = ''.join([folder, subfolder])
     if not os.path.exists(path):
@@ -36,15 +36,21 @@ def pdf_combiner(pdf_list, folder='./temp/', out_filename='out.pdf'):
 
 if __name__ == "__main__":
     # folder with jpeg files '/folder/doc/'
-    folder_name = sys.argv[1]
+    path = './doc/temp/'
+    if len(sys.argv) > 2:
+        if not len(sys.argv[1]):
+            folder_name = sys.argv[1]
 
-    # subfolder for output files result/
-    result_folder = sys.argv[2]
+        # subfolder for output files result
+        if not len(sys.argv[2]):
+            result_folder = sys.argv[2]
 
-    # output filename output.pdf
-    out_file = sys.argv[3]
-    path = folder_name+result_folder
+        # output filename output.pdf
+        if not len(sys.argv[3]):
+            out_file = sys.argv[3]
+        if folder_name and result_folder:
+            path = folder_name+result_folder
 
-    image_to_pdf(folder_name, result_folder)
+    image_to_pdf()
     pdf_list = sorted(os.listdir(path))
-    pdf_combiner(pdf_list, path, out_file)
+    pdf_combiner(pdf_list, path)
