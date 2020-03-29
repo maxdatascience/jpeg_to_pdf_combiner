@@ -1,3 +1,6 @@
+"""
+[Convert .jpeg files from the folder to a single .pdf file]
+"""
 #*****************************************************************************#
 # MIT License                                                                 #
 #                                                                             #
@@ -31,13 +34,22 @@ import PyPDF4
 
 
 def image_to_pdf(folder='./doc/', subfolder='temp/'):
+    """
+    convert .jpeg images to .pdf files for each image separate .pdf file
+
+    Keyword Arguments:
+        folder {str} -- [folder with .jpeg files] (default: {'./doc/'})
+        subfolder {str} -- [subfolder to put .pdf files] (default: {'temp/'})
+    """
     # check if output folder exist
     path = ''.join([folder, subfolder])
     if not os.path.exists(path):
         os.makedirs(path)
 
     # loop through the folder
-    for file_ in sorted(filter(is_file, os.listdir(folder))):
+    for file_ in sorted(
+            filter(lambda x: str(x).endswith('.jpeg'), os.listdir(folder))
+    ):
         print(file_)
         img = Image.open(f'{folder}{file_}')
         clean_name = os.path.splitext(file_)
@@ -46,14 +58,20 @@ def image_to_pdf(folder='./doc/', subfolder='temp/'):
         img.save(f'{path}{clean_name[0]}.pdf', 'pdf')
 
 
-def is_file(list_folder):
-    return str(list_folder).endswith('.jpeg')
+def pdf_combiner(pdfs, folder='./temp/', out_filename='out.pdf'):
+    """
+    merge all .pdf files from folder to a single .pdf file
 
+    Arguments:
+        pdf_list {[list]} -- [sorted list of .pdf files in the folder]
 
-def pdf_combiner(pdf_list, folder='./temp/', out_filename='out.pdf'):
+    Keyword Arguments:
+        folder {str} -- [folder with .pdf files to process] (default: {'./temp/'})
+        out_filename {str} -- [name of output combined .pdf] (default: {'out.pdf'})
+    """
     # merge all pdf to out_file
     merger = PyPDF4.PdfFileMerger()
-    for pdf in pdf_list:
+    for pdf in pdfs:
         merger.append(f'{folder}{pdf}')
         print(f'{pdf} processed')
     merger.write(f'{folder}{out_filename}')
@@ -61,22 +79,22 @@ def pdf_combiner(pdf_list, folder='./temp/', out_filename='out.pdf'):
 
 
 if __name__ == "__main__":
-    # folder with jpeg files '/folder/doc/'
-    path = './doc/temp/'
-    if len(sys.argv) > 2:
-        if not len(sys.argv[1]):
-            folder_name = sys.argv[1]
+    folder_name = './doc/'
+    result_folder = 'temp/'
+    def_path = ''.join([folder_name, result_folder])
+    out_file = 'out.pdf'
 
-        # subfolder for output files result
-        if not len(sys.argv[2]):
-            result_folder = sys.argv[2]
+    if len(sys.argv) > 3:
+        folder_name = sys.argv[1]
+        result_folder = sys.argv[2]
+        out_file = sys.argv[3]
+        def_path = folder_name + result_folder
+    else:
+        print(f'Please input "source folder", "subfolder" and name of the output file!')
+        if not (input('Proceed with current folder? Y/N: ').lower() == 'y'):
+            sys.exit(os.EX_OK)
 
-        # output filename output.pdf
-        if not len(sys.argv[3]):
-            out_file = sys.argv[3]
-        if folder_name and result_folder:
-            path = folder_name+result_folder
-
-    image_to_pdf()
-    pdf_list = sorted(os.listdir(path))
-    pdf_combiner(pdf_list, path)
+    if os.path.exists(folder_name):
+        image_to_pdf()
+        pdf_list = sorted(os.listdir(def_path))
+        pdf_combiner(pdf_list, def_path)
