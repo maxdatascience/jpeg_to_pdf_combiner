@@ -91,7 +91,7 @@ if __name__ == "__main__":
         def_path = folder_name + result_folder
     else:
         print(f'Please input "source folder", "subfolder" and name of the output file!')
-        if not (input('Proceed with current folder? Y/N: ').lower() == 'y'):
+        if not input('Proceed with current folder? Y/N: ').lower() == 'y':
             sys.exit(os.EX_OK)
 
     if os.path.exists(folder_name):
