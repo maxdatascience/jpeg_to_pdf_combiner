@@ -35,6 +35,16 @@ import PyPDF4
 
 
 def image_merge(folder, result_folder, file='.jpeg'):
+    """
+    create one .jpeg file that incorporate face and back of the document splitted vertically
+
+    Arguments:
+        folder {[str]} -- [folder with face and back .jpeg files]
+        result_folder {[str]} -- [result folder for output .jpeg file]
+
+    Keyword Arguments:
+        file {str} -- [description] (default: {'.jpeg'})
+    """
     if os.path.exists(folder):
         end = ('_2.jpeg',)
         first_end = ('_1.jpeg',)
@@ -108,6 +118,15 @@ def pdf_combiner(
 
 
 def pdf_merge(temp_folder, result_folder, out_file):
+    """
+    process folder with .pdf files and create single one that incorporates all
+    files of the folder. Then delete temp folder with processed .pdf files
+
+    Arguments:
+        temp_folder {[str]} -- [temp folder]
+        result_folder {[str]} -- [result folder]
+        out_file {[str]} -- [name of the output .pdf file]
+    """
     if not os.path.exists(result_folder):
         os.makedirs(result_folder)
     pdf_list = sorted(os.listdir(temp_folder))
